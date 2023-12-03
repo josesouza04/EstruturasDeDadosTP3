@@ -22,10 +22,14 @@ SegTree::~SegTree() {
 
 Matrix SegTree::multiply(Matrix *matrixA_, Matrix *matrixB_) {
     Matrix result;
-    result.x1 = ((matrixA_->x1 * matrixB_->x1) + (matrixA_->y1 * matrixB_->x2));
-    result.y1 = ((matrixA_->x1 * matrixB_->y1) + (matrixA_->y1 * matrixB_->y2));
-    result.x2 = ((matrixA_->x2 * matrixB_->x1) + (matrixA_->y2 * matrixB_->x2));
-    result.y2 = ((matrixA_->x2 * matrixB_->y1) + (matrixA_->y2 * matrixB_->y2));
+    result.x1 = (((matrixA_->x1 * matrixB_->x1) % 100000000) + 
+                ((matrixA_->y1 * matrixB_->x2) % 100000000)) % 100000000;
+    result.y1 = (((matrixA_->x1 * matrixB_->y1) % 100000000) + 
+                ((matrixA_->y1 * matrixB_->y2) % 100000000)) % 100000000;
+    result.x2 = (((matrixA_->x2 * matrixB_->x1) % 100000000) + 
+                ((matrixA_->y2 * matrixB_->x2) % 100000000)) % 100000000;
+    result.y2 = (((matrixA_->x2 * matrixB_->y1) % 100000000) + 
+                ((matrixA_->y2 * matrixB_->y2) % 100000000)) % 100000000;
     return result;
 }
 
