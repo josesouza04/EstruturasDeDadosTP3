@@ -5,85 +5,41 @@
 
 #include "../include/segtree.hpp"
 
-int main() { /* 
+int main() { 
     char op;
     int numInst = 0, numOps = 0;
 
     std::cin >> numInst >> numOps;
 
-    Matrix matrixOrig = Matrix(2, 1);
-    Matrix matrixA = Matrix(2, 2);
-    Matrix result = Matrix(2, 1);
+    Matrix matrixA;
+    MatrixL matrixB, result;
     SegTree segTree = SegTree(numInst);
-    segTree.build(0, numInst - 1, 1);
 
-
-    for(int i = 0; i < numOps; i++) {
+    for (int i = 0; i < numOps; i++) {
         std::cin >> op;
+
         switch (op) {
             case 'u': // update
-                int time, value;
+                int time;
                 std::cin >> time;
-
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < 2; j++) {
-                        std::cin >> value;
-                        matrixA.update(i, j, value);
-                    }
-                }
-                segTree.setTreeArrayPos(time, matrixA); 
-                segTree.update(time, matrixA, 0, numInst - 1, 1);
-
+                segTree.update(time, 0, numInst - 1, 1);
                 break;
             case 'q': // query
                 int birthTime, deathTime, coordX, coordY;
-                std::cin >> birthTime >> deathTime >> coordX >> coordY;
-
-                matrixOrig.update(0, 0, coordX);
-                matrixOrig.update(1, 0, coordY);
-
+                std::cin >> birthTime >> deathTime >> matrixB.x1 >> matrixB.x2;
                 matrixA = segTree.query(birthTime, deathTime, 0, numInst - 1, 1);
-                result = segTree.multiply(matrixA, matrixOrig);
-
-                std::cout << result.getElement(0, 0) % 100000000 << 
-                      " " << result.getElement(1, 0) % 100000000 << std::endl;
-
+                
+                for (int i = 0; i < 2; i++) {
+                    result.x1 = (matrixA.x1 * matrixB.x1 + matrixA.y1 * matrixB.x2);
+                    result.x2 = (matrixA.x2 * matrixB.x1 + matrixA.y2 * matrixB.x2);
+                }
+                std::cout << result.x1 % 100000000 << 
+                      " " << result.x2 % 100000000 << std::endl;
                 break;
             default:
                 break;
         }
     }
-    
-    matrixA.~Matrix();
-    matrixOrig.~Matrix();
-    segTree.~SegTree();
-    result.~Matrix();
-    */
-
-    Matrix matrixA = Matrix(2, 3);
-    Matrix matrixB = Matrix(3, 2);
-    Matrix matrixC = Matrix(2, 2);
-    SegTree segTree = SegTree(3);
-
-    matrixA.update(0, 0, 2);
-    matrixA.update(0, 1, 6);
-    matrixA.update(0, 2, 4);
-    matrixA.update(1, 0, 1);
-    matrixA.update(1, 1, 9);
-    matrixA.update(1, 2, 7);
-
-    matrixA.print();
-    matrixB.update(0, 0, 3);
-    matrixB.update(0, 1, 2);
-    matrixB.update(1, 0, 4);
-    matrixB.update(1, 1, 10);
-    matrixB.update(2, 0, 11);
-    matrixB.update(2, 1, 8);
-    matrixB.print();
-    matrixC = matrixA.multiply(matrixA, matrixB);
-    matrixC.print();
-
-
 
     return 0;
 }

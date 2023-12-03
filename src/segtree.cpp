@@ -1,13 +1,18 @@
 // SegTree (Segment Tree) implementation
 #include "../include/segtree.hpp"
 
+SegTree::SegTree() {
+    size = 0;
+    treeArray = nullptr;
+    tree = nullptr;
+}
+
 SegTree::SegTree(int size_) {
     size = size_;
     treeArray = new Matrix[size_];
     tree = new Matrix[4 * size_];
-    for (int i = 0; i < size_; i++) {
-        treeArray[i] = Matrix(2, 2);
-    }
+    for (int i = 0; i < size_; i++) treeArray[i] = Matrix();
+    build(0, size - 1, 1);
 }
 
 SegTree::~SegTree() {
@@ -15,52 +20,44 @@ SegTree::~SegTree() {
     delete[] tree;
 }
 
-Matrix SegTree::build(int left_, int right_, int pos_) {
-    if (left_ == right_) {
-        tree[pos_] = treeArray[left_];
-        return tree[pos_];
-    }
-    int mid = (left_ + right_) / 2;
-    Matrix a = build(left_, mid, 2 * pos_);
-    Matrix b = build(mid + 1, right_, 2 * pos_ + 1);
-    tree[pos_] = a.multiply(a, b);
-    return tree[pos_];
-} // build(0, size - 1, 1)
-
-Matrix SegTree::update(int index_, Matrix value_, int left_, int right_, int pos_) {
-    if (index_ < left_ || index_ > right_) return tree[pos_];
-    if (left_ == right_) {
-        tree[pos_] = value_;
-        return tree[pos_];
-    }
-    int mid = (left_ + right_) / 2;
-    Matrix a = update(index_, value_, left_, mid, 2 * pos_);
-    Matrix b = update(index_, value_, mid + 1, right_, 2 * pos_ + 1);
-    tree[pos_] = a.multiply(a, b);
-    return tree[pos_];
-} // update(index_, value_, 0, size - 1, 1)
-    
-Matrix SegTree::query(int a_, int b_, int left_, int right_, int pos_) {
-    if (b_ < left_ || a_ > right_) return {0, -1};
-    if (a_ <= left_ && b_ >= right_) return tree[pos_];
-    int mid = (left_ + right_) / 2;
-    Matrix a = query(a_, b_, left_, mid, 2 * pos_);
-    Matrix b = query(a_, b_, mid + 1, right_, 2 * pos_ + 1);
-    return a.multiply(a, b);
-} // query(a_, b_, 0, size - 1, 1)
-
-void SegTree::print() {
-    std::cout << "size: " << size << std::endl;
-    std::cout << "treeArray: " << std::endl;
-    for (int i = 0; i < size; i++) {
-        treeArray[i].print();
-    }
-    std::cout << std::endl;
-    std::cout << "tree: " << std::endl;
-    for (int i = 0; i < 4 * size; i++) {
-        tree[i].print();
-    }
-    std::cout << "--------------------" << std::endl;
+Matrix SegTree::multiply(Matrix *matrixA_, Matrix *matrixB_) {
+    Matrix result;
+    result.x1 = ((matrixA_->x1 * matrixB_->x1) + (matrixA_->y1 * matrixB_->x2));
+    result.y1 = ((matrixA_->x1 * matrixB_->y1) + (matrixA_->y1 * matrixB_->y2));
+    result.x2 = ((matrixA_->x2 * matrixB_->x1) + (matrixA_->y2 * matrixB_->x2));
+    result.y2 = ((matrixA_->x2 * matrixB_->y1) + (matrixA_->y2 * matrixB_->y2));
+    return result;
 }
 
+void SegTree::build(int left_, int right_, int pos_) {
+    if (left_ == right_) {
+        tree[pos_] = treeArray[left_];
+        return;
+    }
+    int mid = (left_ + right_) / 2;
+    build(left_, mid, 2 * pos_);
+    build(mid + 1, right_, 2 * pos_ + 1);
+    tree[pos_] = multiply(&(tree[2 * pos_]), &(tree[2 * pos_ + 1]));
+}
+
+void SegTree::update(int index_, int left_, int right_, int pos_) {
+    if (index_ < left_ || index_ > right_) return;
+    if (left_ == right_) {
+        std::cin >> tree[pos_].x1 >> tree[pos_].y1 >> tree[pos_].x2 >> tree[pos_].y2;
+        return;
+    }
+    int mid = (left_ + right_) / 2;
+    if (index_ <= mid) update(index_, left_, mid, 2 * pos_);
+    if (index_ > mid) update(index_, mid + 1, right_, 2 * pos_ + 1);
+    tree[pos_] = multiply(&(tree[2 * pos_]), &(tree[2 * pos_ + 1]));
+}
+
+Matrix SegTree::query(int a_, int b_, int left_, int right_, int pos_) {
+    if (b_ < left_ || a_ > right_) return Matrix();
+    if (a_ <= left_ && b_ >= right_) return tree[pos_];
+    int mid = (left_ + right_) / 2;
+    Matrix leftMatrix = query(a_, b_, left_, mid, 2 * pos_);
+    Matrix rightMatrix = query(a_, b_, mid + 1, right_, 2 * pos_ + 1);
+    return multiply(&leftMatrix, &rightMatrix);
+}
 // Path: src/segtree.cpp

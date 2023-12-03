@@ -2,22 +2,30 @@
 #ifndef SEGTREE_HPP 
 #define SEGTREE_HPP
 
-#include "../include/matrix.hpp"
+#include <iostream>
+
+struct Matrix { // 2x2 identity matrix
+    int x1 = 1, y1 = 0, 
+        x2 = 0, y2 = 1;
+};
+
+struct MatrixL { // 2x1 matrix used for linear transformation
+    int x1 = 0, 
+        x2 = 0;
+};
 
 class SegTree {
     public:
-        SegTree() {size = 0; treeArray = nullptr; tree = nullptr;};
+        SegTree();
         SegTree(int size_);
         ~SegTree();
         
-        Matrix build(int left_, int right_, int pos_);
-        Matrix update(int index_, Matrix value_, int left_, int right_, int pos_);
-        Matrix query(int a_, int b_, int left_, int right_, int pos_);
-
+        Matrix multiply(Matrix *matrixA_, Matrix *matrixB);
         int getSize() {return size;};
-        void setTreeArrayPos(int pos_, Matrix value_) {treeArray[pos_] = value_;};
-        void print();
 
+        void build(int left_, int right_, int pos_);
+        void update(int index_, int left_, int right_, int pos_);
+        Matrix query(int a_, int b_, int left_, int right_, int pos_);
     private:
         int size;
         Matrix *treeArray;
