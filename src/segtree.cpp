@@ -3,20 +3,16 @@
 
 SegTree::SegTree() {
     size = 0;
-    treeArray = nullptr;
     tree = nullptr;
 }
 
 SegTree::SegTree(int size_) {
     size = size_;
-    treeArray = new Matrix[size_];
     tree = new Matrix[4 * size_];
-    for (int i = 0; i < size_; i++) treeArray[i] = Matrix();
     build(0, size - 1, 1);
 }
 
 SegTree::~SegTree() {
-    delete[] treeArray;
     delete[] tree;
 }
 
@@ -33,9 +29,13 @@ Matrix SegTree::multiply(Matrix *matrixA_, Matrix *matrixB_) {
     return result;
 }
 
+int SegTree::getSize() {
+    return size;
+}
+
 void SegTree::build(int left_, int right_, int pos_) {
     if (left_ == right_) {
-        tree[pos_] = treeArray[left_];
+        tree[pos_] = Matrix();
         return;
     }
     int mid = (left_ + right_) / 2;

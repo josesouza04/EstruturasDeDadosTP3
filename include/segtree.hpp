@@ -5,13 +5,13 @@
 #include <iostream>
 
 struct Matrix { // 2x2 identity matrix
-    int x1 = 1, y1 = 0, 
-        x2 = 0, y2 = 1;
+    unsigned long int x1 = 1, y1 = 0, 
+                      x2 = 0, y2 = 1;
 };
 
 struct MatrixL { // 2x1 matrix used for linear transformation
-    int x1 = 0, 
-        x2 = 0;
+    unsigned long int x1 = 0, 
+                      x2 = 0;
 };
 
 class SegTree {
@@ -21,14 +21,13 @@ class SegTree {
         ~SegTree();
         
         Matrix multiply(Matrix *matrixA_, Matrix *matrixB);
-        int getSize() {return size;};
+        int getSize();
 
         void build(int left_, int right_, int pos_);
         void update(int index_, int left_, int right_, int pos_);
         Matrix query(int a_, int b_, int left_, int right_, int pos_);
     private:
         int size;
-        Matrix *treeArray;
         Matrix *tree;
 };
 

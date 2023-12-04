@@ -28,10 +28,8 @@ int main() {
                 int birthTime, deathTime;
                 std::cin >> birthTime >> deathTime >> matrixB.x1 >> matrixB.x2;
                 matrixA = segTree.query(birthTime, deathTime, 0, numInst - 1, 1);
-                for (int i = 0; i < 2; i++) {
-                    result.x1 = (matrixA.x1 * matrixB.x1 + matrixA.y1 * matrixB.x2);
-                    result.x2 = (matrixA.x2 * matrixB.x1 + matrixA.y2 * matrixB.x2);
-                }
+                result.x1 = (matrixA.x1 * matrixB.x1 + matrixA.y1 * matrixB.x2);
+                result.x2 = (matrixA.x2 * matrixB.x1 + matrixA.y2 * matrixB.x2);
                 std::cout << result.x1 % 100000000 << 
                       " " << result.x2 % 100000000 << std::endl;
                 break;
