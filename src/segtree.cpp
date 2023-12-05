@@ -34,6 +34,7 @@ Matrix SegTree::multiply(Matrix *matrixA_, Matrix *matrixB_) { // O(1)
         return result;
     } catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
+        return Matrix();
     }
 }
 
@@ -82,6 +83,7 @@ Matrix SegTree::query(int a_, int b_, int left_, int right_, int pos_) { // O(lo
         return multiply(&leftMatrix, &rightMatrix);
     } catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
+        return Matrix();
     }
 }
 // Path: src/segtree.cpp
